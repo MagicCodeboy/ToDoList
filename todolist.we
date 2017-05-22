@@ -1,0 +1,122 @@
+<template>
+    <div style="height: {{screenHeight}}">
+        <div class="list-container">
+            <list>
+                <cell repeat="{{item in items}}">
+                    <todolist_cell item="{{item}}"></todolist_cell>
+                </cell>
+            </list>
+        </div>
+        <todolist_bottom></todolist_bottom>
+        <add_dialog if="{{showDialog}}"></add_dialog>
+    </div>
+</template>
+
+<style>
+    .list-container{
+        background-color: bisque;
+        flex: 1;
+    }
+</style>
+
+<script>
+    //require('weex-components');
+    require('./component/todolist_bottom.we');
+    require('./component/todolist_cell.we');
+    require('./component/add_dialog.we');
+    var modal = require('@weex-module/modal');
+    var storage = require('@weex-module/storage');
+
+    module.exports = {
+        data: {
+            platform: 'Web',
+            screenHeight : 0,
+            showDialog: false,
+            items : []
+        },
+        init: function () {
+
+        },
+        created: function () {
+            var config = this.$getConfig();
+            console.log(JSON.stringify(config));
+            var env = config.env;
+            var screenHeight = env.deviceHeight;
+            this.screenHeight = screenHeight;
+            this.platform = env.platform;
+            if (this.platform && this.platform === 'Web'){
+
+            }else{
+                this.screenHeight = screenHeight - 120;
+            }
+
+            var self = this;
+            storage.getItem('todolist_cache', function(e) {
+                var result = e.result;
+                if (result === 'success') {
+                    var data = e.data;
+                    self.items = JSON.parse(data);
+                } else {
+                }
+            });
+
+            var self = this;
+            this.$on('bottom-add', function () {
+                self.showDialog = true;
+            });
+            this.$on('bottom-finish', function () {
+                for(var index in this.items){
+                    var item = this.items[index];
+                    var check = item.check;
+                    if(check){
+                        item.finish = true;
+                        item.check = false;
+                    }
+                }
+                storage.setItem('todolist_cache', JSON.stringify(this.items), function(e) {
+                });
+            });
+            this.$on('bottom-delete', function () {
+                var tempArray = [];
+                for(var index in this.items){
+                    var item = this.items[index];
+                    var check = item.check;
+                    if(!check){
+                        tempArray.push(item);
+                    }
+                }
+                this.items = tempArray;
+
+                storage.setItem('todolist_cache', JSON.stringify(this.items), function(e) {
+                });
+            });
+            this.$on('dialog-cancel', function () {
+                this.showDialog = false;
+            });
+            this.$on('dialog-ok',function (e) {
+                this.showDialog = false;
+                var detail = e.detail;
+                var title = detail.title;
+                var time = detail.time;
+                this.items.push({
+                    title:title,
+                    time:time,
+                    check:false,
+                    finish:false
+                });
+                storage.setItem('todolist_cache', JSON.stringify(this.items), function(e) {
+                });
+            });
+
+
+
+        },
+        ready: function () {
+
+        },
+        methods:{
+
+        },
+
+    }
+</script>

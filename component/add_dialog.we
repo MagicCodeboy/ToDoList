@@ -1,0 +1,100 @@
+<template>
+    <div class="container" style="height: {{screenHeight}};background-color:rgba(0, 0, 0,{{opacity}})" >
+        <div class="dialog_container">
+            <text class="title">新增事件</text>
+            <input class="title-input" placeholder="请输入标题" type="text"
+                   oninput="oninputForTitle"></input>
+            <input class="time-input" placeholder="请输入时间" type="text"
+                   oninput="oninputForTime"></input>
+            <div class="bottom">
+                <text class="cancel" onclick="cancel">取消</text>
+                <text class="ok" onclick="ok">确定</text>
+            </div>
+        </div>
+    </div>
+</template>
+
+<style>
+    .container{
+        background-color:grey;
+        position: fixed;
+        width: 750px;
+        top:0;
+        left: 0;
+        align-items: center;
+        justify-content: center;
+    }
+    .dialog_container{
+        background-color: white;
+        width: 600px;
+        height: 310px;
+        align-items: center;
+    }
+    .title{
+        margin-top: 20px;
+        font-size:40px;
+    }
+    .title-input{
+        margin-top: 20px;
+        height: 60px;
+        width: 500px;
+        font-size: 25px;
+        border-width: 1px;
+    }
+    .time-input{
+        margin-top: 20px;
+        height: 60px;
+        width: 500px;
+        font-size: 25px;
+        border-width: 1px;
+    }
+    .bottom{
+        margin-top: 30px;
+        flex-direction: row;
+        width: 400;
+    }
+    .cancel{
+        text-align: center;
+        flex: 1;
+    }
+    .ok{
+        text-align: center;
+        flex: 1;
+    }
+
+</style>
+
+<script>
+    module.exports = {
+        data: {
+            screenHeight:0,
+            opacity:0.5,
+            title: '',
+            time: ''
+        },
+        created: function () {
+            var config = this.$getConfig();
+            var env = config.env;
+            var screenHeight = env.deviceHeight;
+            this.screenHeight = screenHeight;
+        },
+        methods:{
+            cancel: function () {
+                this.$dispatch('dialog-cancel');
+            },
+            ok: function () {
+                this.$dispatch('dialog-ok',{
+                    title : this.title,
+                    time : this.time
+                });
+            },
+            oninputForTitle: function(event) {
+                this.title = event.value;
+            },
+            oninputForTime : function (event) {
+                this.time = event.value;
+            }
+        }
+    }
+
+</script>

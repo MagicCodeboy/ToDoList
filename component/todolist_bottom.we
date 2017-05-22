@@ -1,0 +1,41 @@
+<template>
+   <div class="container">
+      <text class="text" onclick="add">新增</text>
+      <text class="text" onclick="finish">完成</text>
+      <text class="text" onclick="delete">删除</text>
+   </div>
+</template>
+
+<style>
+    .container{
+       background-color: aquamarine;
+       height: 200px;
+       flex-direction: row;
+       align-items: center;
+    }
+   .text{
+      flex: 1;
+      text-align: center;
+      padding: 40px;
+   }
+</style>
+
+<script>
+   module.exports = {
+      data : {
+
+      },
+      methods : {
+         add : function () {
+            this.$dispatch('bottom-add');
+         },
+         finish : function () {
+            this.$dispatch('bottom-finish');
+         },
+         delete : function () {
+            this.$dispatch('bottom-delete');
+         }
+      }
+   }
+
+</script>

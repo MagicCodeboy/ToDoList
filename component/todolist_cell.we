@@ -1,0 +1,72 @@
+<template>
+    <div class="container">
+        <image src="{{picUrl}}" class="pic" onclick="check"></image>
+        <text class="title" style="text-decoration:{{textDecoration}}">{{item.title}}</text>
+        <text class="time">{{item.time}}</text>
+    </div>
+</template>
+
+<style>
+    .container{
+        background-color:gainsboro;
+        height: 80px;
+        margin: 10px;
+        flex-direction: row;
+        align-items: center;
+    }
+    .pic{
+        width: 40px;
+        height: 40px;
+        margin-left: 20px;
+    }
+    .title{
+        margin-left: 20px;
+        flex: 1;
+    }
+    .time{
+        margin-right: 20px;
+    }
+</style>
+
+<script>
+    const icon = require('./icon');
+
+    module.exports = {
+        data : {
+            item:[]
+        },
+        methods : {
+            check : function () {
+                this.item.check = !this.item.check;
+            }
+        },
+        computed: {
+            picUrl: {
+                get :  function () {
+                    if(this.item){
+                        var check = this.item.check;
+                        if(check){
+                            return icon.check;
+                        }else{
+                            return icon.nocheck;
+                        }
+                    }
+                }
+            },
+            textDecoration: {
+                get : function () {
+                    if(this.item){
+                        var finish = this.item.finish;
+                        if(finish){
+                            return 'line-through';
+                        }else{
+                            return 'none';
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+</script>
